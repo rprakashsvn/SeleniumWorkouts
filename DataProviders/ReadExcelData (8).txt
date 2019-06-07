@@ -1,0 +1,26 @@
+@SuppressWarnings("resource")
+	@Test
+	public void ReadExcelFile() throws Exception 
+	{
+		String[][] text = null;
+		FileInputStream fil = new FileInputStream(path);
+		XSSFWorkbook wbk = new XSSFWorkbook(fil);
+		XSSFSheet sheet = wbk.getSheetAt(0);
+		int rowcount = sheet.getLastRowNum();
+		System.out.println("Total Rows : " + rowcount);
+		for (int i = 1; i <= rowcount; i++) 
+		{
+			XSSFRow row = sheet.getRow(i);
+			int colcount = row.getLastCellNum();
+			System.out.println("Total Columns : " + colcount);
+			text = new String[rowcount + 1][colcount];
+			for (int j = 0; j < colcount; j++) 
+			{
+				String Cellval = row.getCell(j).getStringCellValue();
+				text[i][j] = Cellval;
+				System.out.println(text[i][j]);
+			}
+			System.out.println();
+		}
+		fil.close();
+	}

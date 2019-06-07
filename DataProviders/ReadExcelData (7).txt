@@ -1,0 +1,97 @@
+package ExcelReadWrite;
+
+import java.io.File;
+import java.io.FileInputStream;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+public class ReadExcelFile 
+{
+
+	public String filePath = "C:\\Program Files\\sw\\Learn Automation\\TestNGSelenium\\src\\main\\java\\TestDataProvider\\TestData.xlsx";
+	public String nameOfSheet = "Sheet1";
+
+	@BeforeMethod
+	public void ReadExcel() {
+		System.out.println("Started reading a data from Excel");
+	}
+
+	@SuppressWarnings("resource")
+	@Test
+	public void readXLSXFile() throws Exception 
+	{
+		// Load the excel file
+		File loadExcelFile = new File(filePath);
+
+		// Access the excel file for read the data for using FileinputStream
+		FileInputStream readExcelFile = new FileInputStream(loadExcelFile);
+
+		// name of the file loaded for reading a data
+		String excelFileLoc = loadExcelFile.getPath();
+		String excelFileName = loadExcelFile.getName();
+		System.out.println("Excel File Path Is : " + excelFileLoc);
+		System.out.println("Excel File Name Is : " + excelFileName);
+
+		String fileExtensionName = excelFileName.substring(excelFileName.indexOf("."));
+		System.out.println("Excel File Extension Is : " + fileExtensionName);
+
+		if (fileExtensionName.equals(".xlsx")) {
+
+			// Create a object for XLXS files
+			XSSFWorkbook XSSFWorkbooks = new XSSFWorkbook(readExcelFile);
+
+			// Access Excel Sheets by using the object of excel and name of the sheet
+			XSSFSheet sheets = XSSFWorkbooks.getSheet(nameOfSheet);
+
+			// Get count of number of rows
+			int rowCount = sheets.getLastRowNum() + 1;
+			System.out.println("No of Rows in " + nameOfSheet + " is : " + rowCount);
+
+			// Access the cell by using the from rows
+			XSSFRow rowCellValue = sheets.getRow(0);
+
+			// Get count of number of cols
+			int colsCount = rowCellValue.getLastCellNum();
+			System.out.println("No of Cols in " + nameOfSheet + " is : " + colsCount);
+
+			if (rowCount > 0) 
+			{
+				int startRow = 0;
+				int startCol = 0;
+
+				for (int i = startRow; i < rowCount; i++) // loop through the rows
+				{
+					// Access the cell by using the from rows
+					XSSFRow row = sheets.getRow(i);
+					for (int j = startCol; j < row.getLastCellNum(); j++) // loop through the columns
+					{
+						Cell cell = row.getCell(j);
+						switch (cell.getCellType())
+						{
+						case Cell.CELL_TYPE_STRING:
+							System.out.print(row.getCell(j).getStringCellValue() + " ");
+							break;
+						case Cell.CELL_TYPE_NUMERIC:
+							System.out.print((int) row.getCell(j).getNumericCellValue() + " ");
+							break;
+						}
+					}
+					System.out.println();
+				}
+			}
+			readExcelFile.close();
+		}
+	}
+
+	@AfterMethod
+	public void CloseExcel() 
+	{
+		System.out.println("Ended reading a data from Excel");
+	}
+}

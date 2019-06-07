@@ -1,0 +1,90 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using NUnit.Framework;
+using OpenQA.Selenium.Support.UI;
+using System.Threading;
+using AutoIt;
+using System.Diagnostics;
+
+namespace FirstSelenium
+{
+    class Selenium
+    {
+        IWebDriver driver;
+        int numValue;
+        [SetUp]
+        public void initDriver()
+        {
+            driver = new ChromeDriver("C:\\Program Files\\Driver");
+        }
+
+        [Test]
+        public void Login()
+        {
+            driver.Url = ("http://10.240.14.20:7104/HRMS/");
+            //driver.Manage().Window.Maximize();
+            driver.Manage().Timeouts().SetPageLoadTimeout(TimeSpan.FromSeconds(30));
+            //driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(2000));
+            IWebElement uname = driver.FindElement(By.XPath("//input[@id='UserName']"));
+            uname.SendKeys("prakash.r");
+            IWebElement pwd = driver.FindElement(By.XPath("//input[@id='Password']"));
+            pwd.SendKeys("msc@12345");
+            IWebElement chkbox = driver.FindElement(By.XPath("//input[@name='signin']"));
+            chkbox.Click();
+            IWebElement signin = driver.FindElement(By.XPath("//button[@id='submit']"));
+            signin.Click();
+	    
+	    //Drop Down	
+            IWebElement dropdown = driver.FindElement(By.XPath("//select[@id='Organisation_Id']"));
+            SelectElement org = new SelectElement(driver.FindElement(By.Id("Organisation_Id")));
+            org.SelectByText("MSC TECHNOLOGY INDIA PVT LTD");
+
+            IWebElement sign = driver.FindElement(By.XPath("//button[@id='submit']"));
+            sign.Click();
+            IWebElement leavemgt = driver.FindElement(By.XPath("//span[@class='caret']"));
+            leavemgt.Click();
+            IWebElement leaverqest = driver.FindElement(By.LinkText("Leave Request"));
+            leaverqest.Click();
+        }
+
+        [Test]
+        public void Medical_Leave()
+        {
+            Login();
+            IWebElement ML = driver.FindElement(By.XPath("//*[@id='typebutton']/label[1]"));
+            ML.Click();
+            //IWebElement From_Date = driver.FindElement(By.XPath("//*[@id='fromdatectr']/div/div[1]/span/span/span/span"));
+            //From_Date.Click();
+            
+	    IWebElement From_Date = driver.FindElement(By.XPath("//input[@data-role='datepicker']"));
+            DateTime dt = new DateTime();            
+            //DateTime expiryDate = dt.AddDays(1);
+            //Console.WriteLine(expiryDate);
+            Console.WriteLine(dt);
+            IWebElement totaldays = driver.FindElement(By.Id("totaldays"));
+            string no_of_days = totaldays.GetAttribute("Value");
+            numValue = Convert.ToInt32(no_of_days);
+
+            if (numValue >= 3)
+            {
+                Console.WriteLine("Pass");
+                IWebElement upload = driver.FindElement(By.XPath("//*[@class='k-button k-upload-button']"));
+                upload.Click();
+                AutoItX.WinActivate("Open");
+                AutoItX.Send("Test");
+                AutoItX.Send("{ENTER}");
+                Console.WriteLine("Image Uploaded");
+            }
+            else
+            {
+                Console.WriteLine("Failed");
+                //driver.Close();
+            }
+        }
+    }
+}

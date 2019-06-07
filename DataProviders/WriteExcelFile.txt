@@ -1,0 +1,71 @@
+package ExcelReadWrite;
+
+import java.io.File;
+import java.io.FileOutputStream;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.testng.annotations.Test;
+
+public class WriteExcelFile 
+{
+	public static String filePath = "C:\\Program Files\\sw\\Learn Automation\\TestNGSelenium\\DataProviders\\";
+	public static String fileName = "WriteDataExcelFile.xlsx";
+	public static String fileLoc = filePath + fileName;
+	public static String sheetName = "Sheet1";
+
+	@SuppressWarnings({ "unused", "resource" })
+	@Test
+	public void WriteExcel() throws Exception 
+	{
+		System.out.println("Started to create a Excel File");
+
+		String excelFileFormat = fileName.substring(fileName.indexOf("."));
+		System.out.println("Excel File Format Is : " + excelFileFormat);
+		File inputFile = new File(filePath + fileName);
+		boolean fileExistsCheck = inputFile.exists();
+		if (excelFileFormat.equalsIgnoreCase(".xlsx")) 
+		{
+			if (fileExistsCheck == false) 
+			{
+				System.out.println("File is not availabe & created new Excel File");
+				// An output stream accepts output bytes and sends them to sink.
+				FileOutputStream fileOut = new FileOutputStream(fileLoc);
+
+				// Creating Workbook instances
+				XSSFWorkbook XSSFWorkbooks = new XSSFWorkbook();
+
+				// Creating Sheets using sheet object
+				Sheet sheet1 = XSSFWorkbooks.createSheet("Array");
+				Sheet sheet2 = XSSFWorkbooks.createSheet("String");
+				Sheet sheet3 = XSSFWorkbooks.createSheet("LinkedList");
+				Sheet sheet6 = XSSFWorkbooks.createSheet("Puzzles");
+				Sheet sheet7 = XSSFWorkbooks.createSheet("Employees");
+
+				// Creating a row in excelFile
+				Row rowsheet1 = sheet1.createRow(0);
+				Row rowsheet2 = sheet2.createRow(0);
+
+				// Specific cell Number
+				Cell sheet1cell0 = rowsheet1.createCell(0);
+				Cell sheet1cell1 = rowsheet1.createCell(1);
+				Cell sheet1cell2 = rowsheet1.createCell(2);
+
+				// Putting value at specific position
+				sheet1cell0.setCellValue("Rajesh");
+				sheet1cell1.setCellValue("Jegadees");
+				sheet1cell2.setCellValue("Prakash");
+
+				XSSFWorkbooks.write(fileOut);
+				System.out.println("Excel has been created successfully");
+			}
+			else
+			{
+				System.out.println("File is already existed.!");
+			}
+		}
+		
+	}
+}
